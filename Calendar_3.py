@@ -1,53 +1,33 @@
-fobj = open('Calendar_3_in.txt', 'r')
+fobj = open('text.txt')
 
-data = [x for x in fobj]
+data = [x.strip('\n') for x in fobj]
 
-data.sort()
-dates = []
-is1021 = []
-for i in range(len(data)):
-    data[i] = data[i][12:]
-    if '#' in data[i]:
-        if i > 0:
-            dates.append(newData)
-        newData = [int(data[i][data[i].find('#') + 1: data[i].find('b') - 1])]
+testdata = '#1 @ 287,428: 27x20\n #2 @ 282,539: 20x10\n #3 @ 550,118: 20x23\n #4 @ 454,774: 20x19\n #5 @ 542,157: 11x24'
+datadata = testdata.split('\n ')
 
-    else:
-        newData.append(int(data[i][3:5]))
+grid = [[0 for x in range(1000)] for y in range(1000)]
+summ = 0
+usedid = []
+ids = []
+for line in data:
+    identifier = int(line.split('@')[0].strip('# '))
+    ids.append(identifier)
+    startx = int(line.split(',')[0].split('@')[1].strip())
+    starty = int(line.split(',')[1].split(':')[0].strip())
+    x = int(line.split('x')[0].split(':')[1].strip())
+    y = int(line.split('x')[1])
 
+    for i in range(startx, startx + x):
+        for j in range(starty, starty + y):
+            if grid[i][j] == 0:
+                grid[i][j] = identifier
 
-asleep = {}
-times = {}
-for i in range(len(dates)):
-    while len(dates[i]) > 2:
-        aw = dates[i].pop()
-        asl = dates[i].pop()
-        if dates[i][0] == 1021:
-            is1021.append([asl, aw])
-        if dates[i][0] in asleep:
-            asleep[dates[i][0]] = asleep[dates[i][0]] + aw - asl
-        else:
-            asleep[dates[i][0]] = aw - asl
-        if dates[i][0] in times:
-            times[dates[i][0]].append([asl, aw])
-        else:
-            times[dates[i][0]] = [[asl, aw]]
-
-results = {}
-for key in times.keys():
-
-    hour = [0 for i in range(60)]
-
-    for i in range(len(times[key])):
-        for j in range(times[key][i][0], times[key][i][1]):
-            hour[j] += 1
-    number = max(hour)
-    minute = hour.index(max(hour))
-    results[number] = [minute, key]
-
-solution2 = results[max(results.keys())][0]*results[max(results.keys())][1]
-print solution2
-
-solution1 = hour.index(max(hour))* asleep.keys()[asleep.values().index(max(asleep.values()))]
-print solution1
-
+            elif grid[i][j] == 'X':
+                usedid.append(identifier)
+            else:
+                usedid.append(identifier)
+                usedid.append(grid[i][j])
+                grid[i][j] = 'X'
+                summ += 1
+print summ
+print str(set(ids)-set(usedid)).strip('set([])')
